@@ -1,11 +1,11 @@
 // import * as THREE from 'three'
 import { useEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-// import { useKeyboardControls } from '@react-three/drei'
-import { Mesh } from 'three'
+import { RapierRigidBody, RigidBody } from '@react-three/rapier'
 
 
 export default function Player() {
+
   // Consider making a Map which accounts for different keys to use for the same function
   const keyMap: { [key: string]: boolean } = {
     w: false,
@@ -13,23 +13,21 @@ export default function Player() {
     a: false,
     d: false
   }
-
-
-  const player = useRef<Mesh>(null!)
+  const player = useRef<RapierRigidBody>(null!)
   
     useFrame((_state, delta) => {
       
       if (keyMap.w) {
-        player.current.position.z -= delta * 1;
+        player.current.applyImpulse( { x: 0, y: 0, z: -1 } , true);
       }
       if (keyMap.s) {
-        player.current.position.z += delta * 1;
+        player.current.applyImpulse( { x: 0, y: 0, z: 1 } , true);
       }
       if (keyMap.a) {
-        player.current.position.x -= delta * 1;
+        player.current.applyImpulse( { x: -1, y: 0, z: 0 } , true);
       }
       if (keyMap.d) {
-        player.current.position.x += delta * 1;
+        player.current.applyImpulse( { x: 1, y: 0, z: 0 } , true);
       }
     })
 
@@ -52,10 +50,12 @@ export default function Player() {
     },[])
 
     return (
-      <mesh ref={player} position={[0,0.5,0]} rotation={[-((Math.PI/2)),0,0]}>
-          <boxGeometry args={[1,1,1]}/>
-          <meshStandardMaterial color={'#8181e3'} />
-      </mesh>
+        <RigidBody ref={player}>
+          <mesh  position={[0,0.6,0]} rotation={[-((Math.PI/2)),0,0]}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color={'#8181e3'} />
+          </mesh>
+        </RigidBody>
     )
   }
   
