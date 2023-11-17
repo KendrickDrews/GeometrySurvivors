@@ -13,12 +13,14 @@ export default function GameBoard() {
   return (
     <>
     <gridHelper args={[size, divisions, color, centerlineColor]}/>
+    {/* Game Plane */}
     <RigidBody type="fixed">
-      <mesh position={[0,0,0]} rotation={[-((Math.PI/2)),0,0]}>
+      <mesh position={[0,0,0]} rotation={[-((Math.PI/2)),0,0]} receiveShadow>
         <planeGeometry args={[100, 100, 1, 1]}/>
         <meshStandardMaterial color={'#fa9db1'} />
       </mesh>
     </RigidBody>
+    {/* Second Box on Board */}
     <RigidBody >
       <mesh position={[-0.5,3.5,-0.5]} rotation={[-((Math.PI/2)),0,0]}>
             <boxGeometry args={[1,1,1]}/>

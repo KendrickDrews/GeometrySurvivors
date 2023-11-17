@@ -15,6 +15,7 @@ function App() {
       <Canvas onCreated={({ gl }) => { gl.toneMapping = THREE.NoToneMapping }} camera={{ position: [20, 15, 20], fov: 26 }}>
         <ambientLight intensity={2.5}/>
         <pointLight position={[10, 10, 10]} intensity={10} color={[1,1,1]}/>
+        <directionalLight position={[0,1,0]} castShadow color={[1,1,1]} intensity={2}/>
         <Physics debug>
           <Player />
           <GameBoard />
