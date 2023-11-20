@@ -15,21 +15,24 @@ export default function Player() {
     jump: false,
   }
   const player = useRef<RapierRigidBody>(null!)
+  const playerSpeed = 0.20
   const playerControls = () => {
+    // Is Destructuring worth it? Probably Not...
+    const { w: forward, s: backward, a: left, d: right, jump: jump } = keyMap;
     // Double axis influence makes 45 Degree's be Up,Down,Left,Right. Rotate entire scene to change this
-    if (keyMap.w) {
-      player.current.applyImpulse( { x: -1, y: 0, z: -1 } , true);
+    if (forward) {
+      player.current.applyImpulse( { x: -playerSpeed, y: 0, z: -playerSpeed } , true);
     }
-    if (keyMap.s) {
-      player.current.applyImpulse( { x: 1, y: 0, z: 1 } , true);
+    if (backward) {
+      player.current.applyImpulse( { x: playerSpeed, y: 0, z: playerSpeed } , true);
     }
-    if (keyMap.a) {
-      player.current.applyImpulse( { x: -1, y: 0, z: 1 } , true);
+    if (left) {
+      player.current.applyImpulse( { x: -playerSpeed, y: 0, z: playerSpeed } , true);
     }
-    if (keyMap.d) {
-      player.current.applyImpulse( { x: 1, y: 0, z: -1 }, true);
+    if (right) {
+      player.current.applyImpulse( { x: playerSpeed, y: 0, z: -playerSpeed }, true);
     }
-    if (keyMap.jump) {
+    if (jump) {
       player.current.applyImpulse( { x: 0, y: 1, z: 0 }, true )
     }
   }
