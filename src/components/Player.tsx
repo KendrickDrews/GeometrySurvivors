@@ -5,6 +5,7 @@ import { RapierRigidBody, RigidBody } from '@react-three/rapier'
 
 
 export default function Player() {
+  let jumpCount = 1;
 
   // Consider making a Map which accounts for different keys to use for the same function
   const keyMap: { [key: string]: boolean } = {
@@ -14,32 +15,38 @@ export default function Player() {
     d: false,
     jump: false,
   }
-  const player = useRef<RapierRigidBody>(null!)
-  const playerSpeed = 0.20
-  const playerControls = () => {
-    // Is Destructuring worth it? Probably Not...
-    const { w: forward, s: backward, a: left, d: right, jump: jump } = keyMap;
+
+  
+  const player = useRef<RapierRigidBody>(null!);
+  const speedModifiyer = 1.5;
+  const jumpModifiyer = 2.5;
+
+  const playerControls = (delta: number) => {
+    const playerSpeed = speedModifiyer * (delta * 10)
+    const jumpForce = jumpModifiyer * (delta * 100)
     // Double axis influence makes 45 Degree's be Up,Down,Left,Right. Rotate entire scene to change this
-    if (forward) {
+    if (keyMap.w) {
       player.current.applyImpulse( { x: -playerSpeed, y: 0, z: -playerSpeed } , true);
     }
-    if (backward) {
+    if (keyMap.s) {
       player.current.applyImpulse( { x: playerSpeed, y: 0, z: playerSpeed } , true);
     }
-    if (left) {
+    if (keyMap.a) {
       player.current.applyImpulse( { x: -playerSpeed, y: 0, z: playerSpeed } , true);
     }
-    if (right) {
+    if (keyMap.d) {
       player.current.applyImpulse( { x: playerSpeed, y: 0, z: -playerSpeed }, true);
     }
-    if (jump) {
-      player.current.applyImpulse( { x: 0, y: 1, z: 0 }, true )
+    if (keyMap.jump) {
+      if (jumpCount > 0) {
+        player.current.applyImpulse( { x: 0, y: jumpForce, z: 0 }, true )
+        jumpCount--;
+      }
     }
   }
   
     useFrame((_state, delta) => {
-      playerControls()
-      
+      playerControls(delta)
     })
 
     const keyPress = (e: KeyboardEvent) => {
