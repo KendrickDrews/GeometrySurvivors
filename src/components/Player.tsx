@@ -1,4 +1,4 @@
-// import * as THREE from 'three'
+import * as THREE from 'three'
 import { useEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { RapierRigidBody, RigidBody } from '@react-three/rapier'
@@ -7,7 +7,7 @@ import { RapierRigidBody, RigidBody } from '@react-three/rapier'
 export default function Player() {
   let jumpCount = 1;
 
-  // Consider making a Map which accounts for different keys to use for the same function
+  // Consider making a Map which accounts for different keys to use for the same function ("Keyboard Controls" from pmndrs)
   const keyMap: { [key: string]: boolean } = {
     w: false,
     s: false,
@@ -18,12 +18,13 @@ export default function Player() {
 
   
   const player = useRef<RapierRigidBody>(null!);
-  const speedModifiyer = 1.5;
-  const jumpModifiyer = 2.5;
+  const isOnFloor = useRef(true);
+  const speedModifiyer = 1;
+  const jumpModifiyer = 3;
 
   const playerControls = (delta: number) => {
     const playerSpeed = speedModifiyer * (delta * 10)
-    const jumpForce = jumpModifiyer * (delta * 100)
+    const jumpForce = jumpModifiyer
     // Double axis influence makes 45 Degree's be Up,Down,Left,Right. Rotate entire scene to change this
     if (keyMap.w) {
       player.current.applyImpulse( { x: -playerSpeed, y: 0, z: -playerSpeed } , true);
@@ -40,13 +41,26 @@ export default function Player() {
     if (keyMap.jump) {
       if (jumpCount > 0) {
         player.current.applyImpulse( { x: 0, y: jumpForce, z: 0 }, true )
-        jumpCount--;
       }
     }
   }
   
+    const playerVector = new THREE.Vector3(0, 0, 0);
+    const cameraVector = new THREE.Vector3(0, 0, 0);
+    const cameraOffset = 25
+
     useFrame((_state, delta) => {
       playerControls(delta)
+
+      // Camera Follows Player from fixed position
+      const playerPos = player.current.translation();
+      playerVector.set(playerPos.x, playerPos.y, playerPos.z)
+
+      cameraVector.lerp(playerVector, 0.1);
+      _state.camera.lookAt(cameraVector);
+      _state.camera.position.set( playerVector.x + cameraOffset , cameraOffset , playerVector.z + cameraOffset  )
+      _state.camera.updateProjectionMatrix();
+
     })
 
     const keyPress = (e: KeyboardEvent) => {
@@ -74,7 +88,20 @@ export default function Player() {
     },[])
 
     return (
-        <RigidBody ref={player}>
+        <RigidBody ref={player} 
+          onCollisionEnter={({other}) => {
+            if (other.rigidBodyObject?.name === "floor") {
+              isOnFloor.current = true;
+              jumpCount = 1
+            }
+          }}
+          onCollisionExit={({other}) => {
+            if (other.rigidBodyObject?.name === "floor") {
+              isOnFloor.current = false;
+              jumpCount = 0
+            }
+          }}
+        >
           <mesh  position={[0,0.6,0]} rotation={[-((Math.PI/2)),0,0]} castShadow>
               <boxGeometry args={[1,1,1]}/>
               <meshStandardMaterial color={'#8181e3'} />

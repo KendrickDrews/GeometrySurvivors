@@ -14,8 +14,8 @@ export default function GameBoard() {
     <>
     <gridHelper args={[size, divisions, color, centerlineColor]}/>
     {/* Game Plane */}
-    <RigidBody type="fixed">
-      <mesh position={[0,0,0]} rotation={[-((Math.PI/2)),0,0]} receiveShadow>
+    <RigidBody type="fixed" name="floor">
+      <mesh position={[0,-0.01,0]} rotation={[-((Math.PI/2)),0,0]} receiveShadow>
         <planeGeometry args={[100, 100, 1, 1]}/>
         <meshStandardMaterial color={'#fa9db1'} />
       </mesh>
