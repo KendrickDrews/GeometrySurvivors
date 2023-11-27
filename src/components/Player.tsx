@@ -24,6 +24,7 @@ export default function Player() {
 
   const playerControls = (delta: number) => {
     const playerSpeed = speedModifiyer * (delta * 10)
+    // Leaving this here for potential other modifiyers in the future
     const jumpForce = jumpModifiyer
     // Double axis influence makes 45 Degree's be Up,Down,Left,Right. Rotate entire scene to change this
     if (keyMap.w) {
