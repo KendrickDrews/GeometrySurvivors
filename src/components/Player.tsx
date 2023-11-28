@@ -13,10 +13,13 @@ export default function Player() {
     s: false,
     a: false,
     d: false,
+    q: false,
+    e: false,
     jump: false,
   }
 
-  
+  const cameraRef = useRef(null!)
+  let cameraAngle = 0;
   const player = useRef<RapierRigidBody>(null!);
   const isOnFloor = useRef(true);
   const speedModifiyer = 1;
@@ -28,7 +31,7 @@ export default function Player() {
     const jumpForce = jumpModifiyer
     // Double axis influence makes 45 Degree's be Up,Down,Left,Right. Rotate entire scene to change this
     if (keyMap.w) {
-      player.current.applyImpulse( { x: -playerSpeed, y: 0, z: -playerSpeed } , true);
+      player.current.applyImpulse( { x: -playerSpeed, y: 0, z: -playerSpeed } , true); // x: Math.cos(cameraAngle) * playerSpeed, y..., z: Math.sin(cameraAngle) * playerSpeed
     }
     if (keyMap.s) {
       player.current.applyImpulse( { x: playerSpeed, y: 0, z: playerSpeed } , true);
@@ -38,6 +41,14 @@ export default function Player() {
     }
     if (keyMap.d) {
       player.current.applyImpulse( { x: playerSpeed, y: 0, z: -playerSpeed }, true);
+    }
+    if (keyMap.q) {
+      // Rotate Camera Counter ClockWise
+      cameraAngle -= Math.PI/180
+    }
+    if (keyMap.e) {
+      // Rotate Camera ClockWise.
+      cameraAngle += Math.PI/180
     }
     if (keyMap.jump) {
       if (jumpCount > 0) {
@@ -52,13 +63,14 @@ export default function Player() {
 
     useFrame((_state, delta) => {
       playerControls(delta)
+      
 
       // Camera Follows Player from fixed position
       const playerPos = player.current.translation();
-      playerVector.set(playerPos.x, playerPos.y, playerPos.z)
+      playerVector.set(playerPos.x, 0, playerPos.z)
 
       _state.camera.lookAt(playerVector)
-      _state.camera.position.lerp(cameraVector.set(playerVector.x + cameraOffset, cameraOffset, playerVector.z + cameraOffset), 0.1)
+      _state.camera.position.lerp(cameraVector.set((playerVector.x + cameraOffset), cameraOffset, playerVector.z + cameraOffset), 0.05)
       _state.camera.updateProjectionMatrix();
 
     })
