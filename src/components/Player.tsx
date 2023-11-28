@@ -57,14 +57,9 @@ export default function Player() {
       const playerPos = player.current.translation();
       playerVector.set(playerPos.x, playerPos.y, playerPos.z)
 
-      cameraVector.lerp(playerVector, 0.1);
-      _state.camera.lookAt(cameraVector);
-      _state.camera.position.set( playerVector.x + cameraOffset , cameraOffset , playerVector.z + cameraOffset  )
+      _state.camera.lookAt(playerVector)
+      _state.camera.position.lerp(cameraVector.set(playerVector.x + cameraOffset, cameraOffset, playerVector.z + cameraOffset), 0.1)
       _state.camera.updateProjectionMatrix();
-      // try something different for Lerping Camera Vector. Need to set it up differently
-      // _state.camera.lookAt(playerVector)
-      // cameraVector = (playerVector.x, offset, playerVector.z) // maybe '_state.camera.position.lerp(cameraVector.set(x,y,z))
-      // _state.camera.position.lerp(cameraVector,0.1)
 
     })
 
