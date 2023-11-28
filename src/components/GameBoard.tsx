@@ -2,7 +2,7 @@
 // import { useRef, useState } from 'react'
 // import { Canvas, useFrame, ThreeElements } from '@react-three/fiber'
 
-import { RigidBody } from "@react-three/rapier"
+import { CuboidCollider, RigidBody } from "@react-three/rapier"
 
 const gridProps = { size: 100, divisions: 100, color: "#000000", centerlineColor: "#000000" }
 
@@ -20,12 +20,19 @@ export default function GameBoard() {
         <meshStandardMaterial color={'#fa9db1'} />
       </mesh>
     </RigidBody>
+    {/* edges of the world */}
+    <RigidBody type="fixed">
+      <CuboidCollider args={ [ 50, 2, 0.5 ] } position={ [ 0, 1, 50.5 ] } />
+      <CuboidCollider args={ [ 50, 2, 0.5 ] } position={ [ 0, 1, - 50.5 ] } />
+      <CuboidCollider args={ [ 0.5, 2, 50 ] } position={ [ 50.5, 1, 0 ] } />
+      <CuboidCollider args={ [ 0.5, 2, 50 ] } position={ [ - 50.5, 1, 0 ] } />
+    </RigidBody>
     {/* Second Box on Board */}
     <RigidBody >
       <mesh position={[-0.5,3.5,-0.5]} rotation={[-((Math.PI/2)),0,0]}>
-            <boxGeometry args={[1,1,1]}/>
-            <meshStandardMaterial color={'#3131e3'} />
-        </mesh>
+        <boxGeometry args={[1,1,1]}/>
+        <meshStandardMaterial color={'#3131e3'} />
+      </mesh>
     </RigidBody>
 
     </>
