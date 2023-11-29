@@ -58,7 +58,6 @@ export default function Player() {
   }
   
     const playerVector = new THREE.Vector3(0, 0, 0);
-    const cameraVector = new THREE.Vector3(0, 0, 0);
     const cameraOffset = 25
 
     useFrame((_state, delta) => {
@@ -67,10 +66,9 @@ export default function Player() {
 
       // Camera Follows Player from fixed position
       const playerPos = player.current.translation();
-      playerVector.set(playerPos.x, 0, playerPos.z)
 
-      _state.camera.lookAt(playerVector)
-      _state.camera.position.lerp(cameraVector.set((playerVector.x + cameraOffset), cameraOffset, playerVector.z + cameraOffset), 0.05)
+      _state.camera.lookAt(playerPos.x, 0, playerPos.z)
+      _state.camera.position.lerp(playerVector.set((playerPos.x + cameraOffset), cameraOffset, playerPos.z + cameraOffset), 0.05)
       _state.camera.updateProjectionMatrix();
 
     })
