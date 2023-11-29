@@ -17,7 +17,7 @@ function App() {
           <directionalLight position={[0,10,0]} castShadow color={'0xffffff'} intensity={2.5}>
             <orthographicCamera attach="shadow-camera" args={[-100, 100, 100, -100]} />
           </directionalLight>
-          <Physics debug>
+          <Physics timeStep="vary" debug>
             <Player />
             <GameBoard />
           </Physics>
