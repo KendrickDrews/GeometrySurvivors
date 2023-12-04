@@ -27,7 +27,7 @@ export default function Player() {
 
   const playerControls = (delta: number) => {
     const playerSpeed = speedModifiyer * (delta * 10)
-    // Leaving this here for potential other modifiyers in the future
+    // Leaving this here for potential other modifiers in the future
     const jumpForce = jumpModifiyer
     // Double axis influence makes 45 Degree's be Up,Down,Left,Right. Rotate entire scene to change this
     if (keyMap.w) {
@@ -62,13 +62,16 @@ export default function Player() {
 
     useFrame((_state, delta) => {
       playerControls(delta)
+      const cameraRotationX = Math.sin(cameraAngle)
+      const cameraRotationZ = Math.cos(cameraAngle)
       
-
       // Camera Follows Player from fixed position
       const playerPos = player.current.translation();
-
+      
       _state.camera.lookAt(playerPos.x, 0, playerPos.z)
-      _state.camera.position.lerp(playerVector.set((playerPos.x + cameraOffset), cameraOffset, playerPos.z + cameraOffset), 0.05)
+      _state.camera.position.lerp(playerVector.set((playerPos.x + cameraOffset) * cameraRotationX, cameraOffset, (playerPos.z + cameraOffset) * cameraRotationZ), 0.1)
+      // _state.camera.position.x = Math.sin(cameraAngle + cameraOffset) * 8
+      // _state.camera.position.z = Math.cos(cameraAngle + cameraOffset) * 8
       _state.camera.updateProjectionMatrix();
 
     })
