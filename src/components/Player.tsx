@@ -69,9 +69,7 @@ export default function Player() {
       const playerPos = player.current.translation();
       
       _state.camera.lookAt(playerPos.x, 0, playerPos.z)
-      _state.camera.position.lerp(playerVector.set((playerPos.x + cameraOffset) * cameraRotationX, cameraOffset, (playerPos.z + cameraOffset) * cameraRotationZ), 0.1)
-      // _state.camera.position.x = Math.sin(cameraAngle + cameraOffset) * 8
-      // _state.camera.position.z = Math.cos(cameraAngle + cameraOffset) * 8
+      _state.camera.position.lerp(playerVector.set(playerPos.x + cameraOffset * cameraRotationX, cameraOffset, playerPos.z + cameraOffset * cameraRotationZ), 0.1)
       _state.camera.updateProjectionMatrix();
 
     })
