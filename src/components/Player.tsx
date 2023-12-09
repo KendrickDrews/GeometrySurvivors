@@ -25,30 +25,30 @@ export default function Player() {
   const speedModifiyer = 1;
   const jumpModifiyer = 3;
 
-  const playerControls = (delta: number) => {
+  const playerControls = (delta: number, xAngle: number, zAngle: number) => {
     const playerSpeed = speedModifiyer * (delta * 10)
     // Leaving this here for potential other modifiers in the future
     const jumpForce = jumpModifiyer
     // Double axis influence makes 45 Degree's be Up,Down,Left,Right. Rotate entire scene to change this
     if (keyMap.w) {
-      player.current.applyImpulse( { x: -playerSpeed, y: 0, z: -playerSpeed } , true); // x: Math.cos(cameraAngle) * playerSpeed, y..., z: Math.sin(cameraAngle) * playerSpeed
+      player.current.applyImpulse( { x: -playerSpeed * xAngle, y: 0, z: -playerSpeed * zAngle } , true); // x: Math.cos(cameraAngle) * playerSpeed, y..., z: Math.sin(cameraAngle) * playerSpeed
     }
     if (keyMap.s) {
-      player.current.applyImpulse( { x: playerSpeed, y: 0, z: playerSpeed } , true);
+      player.current.applyImpulse( { x: playerSpeed * xAngle, y: 0, z: playerSpeed * zAngle } , true);
     }
     if (keyMap.a) {
-      player.current.applyImpulse( { x: -playerSpeed, y: 0, z: playerSpeed } , true);
+      player.current.applyImpulse( { x: -playerSpeed * zAngle, y: 0, z: playerSpeed * xAngle } , true);
     }
     if (keyMap.d) {
-      player.current.applyImpulse( { x: playerSpeed, y: 0, z: -playerSpeed }, true);
+      player.current.applyImpulse( { x: playerSpeed * zAngle, y: 0, z: -playerSpeed * xAngle }, true);
     }
     if (keyMap.q) {
       // Rotate Camera Counter ClockWise
-      cameraAngle -= Math.PI/180
+      cameraAngle += Math.PI/180
     }
     if (keyMap.e) {
       // Rotate Camera ClockWise.
-      cameraAngle += Math.PI/180
+      cameraAngle -= Math.PI/180
     }
     if (keyMap.jump) {
       if (jumpCount > 0) {
@@ -59,11 +59,13 @@ export default function Player() {
   
     const playerVector = new THREE.Vector3(0, 0, 0);
     const cameraOffset = 25
+    
 
     useFrame((_state, delta) => {
-      playerControls(delta)
       const cameraRotationX = Math.sin(cameraAngle)
       const cameraRotationZ = Math.cos(cameraAngle)
+      playerControls(delta, cameraRotationX, cameraRotationZ)
+      
       
       // Camera Follows Player from fixed position
       const playerPos = player.current.translation();
