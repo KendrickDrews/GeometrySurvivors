@@ -1,10 +1,12 @@
 import * as THREE from 'three'
 import { useEffect, useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useLoader } from '@react-three/fiber'
 import { RapierRigidBody, RigidBody } from '@react-three/rapier'
+import { TextureLoader } from 'three'
 
 
 export default function Player() {
+  const colorMap = useLoader(TextureLoader, 'src/imgs/Cube-Map.png')
   let jumpCount = 1;
 
   // Consider making a Map which accounts for different keys to use for the same function ("Keyboard Controls" from pmndrs)
@@ -56,7 +58,7 @@ export default function Player() {
       }
     }
   }
-  
+    const meshRef = useRef<THREE.Mesh>(null!)
     const playerVector = new THREE.Vector3(0, 0, 0);
     const cameraOffset = 25
     
@@ -65,14 +67,20 @@ export default function Player() {
       const cameraRotationX = Math.sin(cameraAngle)
       const cameraRotationZ = Math.cos(cameraAngle)
       playerControls(delta, cameraRotationX, cameraRotationZ)
-      
-      
+      // get mouse Coords
+      const mouseX = _state.pointer.x
+      const mouseY = _state.pointer.y
       // Camera Follows Player from fixed position
       const playerPos = player.current.translation();
       
       _state.camera.lookAt(playerPos.x, 0, playerPos.z)
       _state.camera.position.lerp(playerVector.set(playerPos.x + cameraOffset * cameraRotationX, cameraOffset, playerPos.z + cameraOffset * cameraRotationZ), 0.1)
       _state.camera.updateProjectionMatrix();
+
+
+      const theta = Math.atan2(mouseY - playerPos.z * cameraRotationZ, mouseX - playerPos.x * cameraRotationX)
+
+      meshRef.current.rotation.set(0, theta, 0 )
 
     })
 
@@ -115,9 +123,9 @@ export default function Player() {
             }
           }}
         >
-          <mesh  position={[0,0.6,0]} rotation={[-((Math.PI/2)),0,0]} castShadow>
+          <mesh ref={meshRef}  position={[0,0.6,0]} rotation={[0,0,0]} castShadow>
               <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color={'#8181e3'} />
+          <meshStandardMaterial color={'#8181e3'} map={colorMap} />
           </mesh>
         </RigidBody>
     )
