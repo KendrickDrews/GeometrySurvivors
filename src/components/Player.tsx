@@ -20,8 +20,8 @@ export default function Player() {
     jump: false,
   }
 
-  const cameraRef = useRef(null!)
   let cameraAngle = 0;
+  
   const player = useRef<RapierRigidBody>(null!);
   const isOnFloor = useRef(true);
   const speedModifiyer = 1;
@@ -70,6 +70,7 @@ export default function Player() {
       // get mouse Coords
       const mouseX = _state.pointer.x
       const mouseY = _state.pointer.y
+      const mouseTheta = Math.atan2(mouseY, mouseX)
       // Camera Follows Player from fixed position
       const playerPos = player.current.translation();
       
@@ -78,9 +79,9 @@ export default function Player() {
       _state.camera.updateProjectionMatrix();
 
 
-      const theta = Math.atan2(mouseY, mouseX)
+      
 
-      meshRef.current.rotation.set(0, theta, 0 )
+      meshRef.current.rotation.set(0, mouseTheta + cameraAngle, 0 )
 
     })
 
