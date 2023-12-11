@@ -78,7 +78,7 @@ export default function Player() {
       _state.camera.updateProjectionMatrix();
 
 
-      const theta = Math.atan2(mouseY - playerPos.z * cameraRotationZ, mouseX - playerPos.x * cameraRotationX)
+      const theta = Math.atan2(mouseY, mouseX)
 
       meshRef.current.rotation.set(0, theta, 0 )
 
